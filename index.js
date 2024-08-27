@@ -12,7 +12,6 @@ const Microsoft = {
 
 console.log('cfYear1: ' + Microsoft.cfYear1)
 
-formula();
 
 function formula(){
     let DFC = 0;
@@ -32,4 +31,12 @@ function formula(){
     console.log('DFC: ' + DFC);
     console.log('NPV: ' + netPresentValue);
 
+    return DFC;
 }
+
+let endValue = formula();
+let startValue = Microsoft.cfYear1;
+
+let cagr = (endValue / startValue) ** (1 / yearsSelected) - 1;
+
+console.log('CAGR: ' + (cagr * 100).toFixed(2) + '%')
