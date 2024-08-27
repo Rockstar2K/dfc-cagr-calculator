@@ -8,9 +8,54 @@
 </head>
 <body>
 
-    <div class="hero">Calulator</div>
+    <div class="hero">
 
-    <script src="./index.js"></script>
+        <h1>DFC & CAGR Calculator</h1>
+
+        <div class="select-container">
+            <p>Select the Company: </p>
+
+
+            <select id="companySelect">
+                <option value="Microsoft">Microsoft</option>
+                <option value="Apple">Apple</option>
+                <option value="Google">Google</option>
+            </select>
+
+        </div>
+
+        <div class="select-container">
+            <p>Select the Number of Years to project: </p>
+
+            <select id="yearsSelect">
+                <option value=3 >3 years</option>
+                <option value=5 >5 years</option>
+                <option value=10 >10 years</option>
+                <option value=15 >15 years</option>
+                <option value=30 >30 years</option>
+            </select>
+
+        </div>
+
+        <div class="select-container">
+            <p>Select Discounted rate</p>
+
+            <select id="discountedRateSelect">
+                <option value=5 >5% low risk</option>
+                <option value=15 >15% medium risk</option>
+                <option value=30 >30% high risk</option>
+    
+            </select>
+        </div>
+
+        <button onclick="getSelectedOptions()">Calculate</button>
+        <p id="result"></p>
+        <p>Codigo escrito por mi, chatgpt solo me ayudo a encontrar errores ;) </p>
+
+    </div>
+
+    <script src="./script.js"></script>
     
 </body>
 </html>
+
