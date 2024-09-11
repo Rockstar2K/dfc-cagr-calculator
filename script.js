@@ -5,6 +5,7 @@ let yearsSelected = 0; //user selects the number of years of projection
 let cf = 0;
 let endValue;
 
+
 /*
 const Microsoft = {
     name: 'Microsoft', //name of the company
@@ -12,6 +13,8 @@ const Microsoft = {
     inBillions: true, // this defines if the company free cash flow is in millions or billions
 }
 */
+
+
 
 
 
@@ -23,6 +26,12 @@ class Company{
     }
 }
 
+const companies = [
+    new Company('Microsoft', 59475, true),
+    new Company('Apple', 99584, true),
+    new Company('Google', 69495, true)
+];
+
 
 
 //Calculate
@@ -30,32 +39,12 @@ function getSelectedOptions(){
 
     const companySelect = document.getElementById('companySelect');
     const companySelectedValue = companySelect.value;
-      
-    if(companySelectedValue == 'Microsoft'){
 
-        //we create the object and asign the global variable
-        const microsoft = new Company('Microsoft', 59475, true)
-        cf =  microsoft.cfYear1;
-
-        console.log("company selected: " + companySelectedValue)
-
-    } else if (companySelectedValue == 'Apple'){
-
-        //we create the object and asign the global variable
-        const apple = new Company('Apple', 99584, true)
-        cf =  apple.cfYear1;
-  
-        console.log("company selected: " + companySelectedValue)
-
-    } else if (companySelectedValue == 'Google'){
-
-        //we create the object and asign the global variable
-        const google = new Company('Google', 69495, true)
-        cf =  google.cfYear1;
- 
-        console.log("company selected: " + companySelectedValue)
-
-    }
+    //Metodos de array (antes era un switch)
+    const selectedCompany = companies.find(company => company.name === companySelectedValue)
+    console.log('selectedCompany: ' + selectedCompany.name)
+    cf = selectedCompany.cfYear1;
+    console.log('selectedCompany cf: ' + cf)
 
     const yearsSelect = document.getElementById('yearsSelect');
     const yearsSelectedValue = yearsSelect.value;
@@ -69,9 +58,38 @@ function getSelectedOptions(){
     discountRateSelected = discountedRateSelectedValue;
     console.log('Discounted Rate Selected: ' + discountedRateSelectedValue)
 
-    let result = getCAGR();
+    const initialInvestmentSelect = document.getElementById('initial-investment')
+    const initialInvestmentSelectedValue = initialInvestmentSelect.value;
+    console.log('your initial investment was: ' + initialInvestmentSelectedValue)
 
-    document.getElementById("result").innerHTML = "Compounded Annual Growth Rate Expected: " + result + '%';
+    if (!initialInvestmentSelectedValue){
+        alert('please insert your initial investment')
+    }
+
+    let cagrResult = getCAGR();
+    let finalInvestmentresult = getFinalInvestment(cagrResult, initialInvestmentSelectedValue);
+
+
+    displayResult(cagrResult, finalInvestmentresult)
+}
+
+function getFinalInvestment(cagrResult, initialInvestmentSelectedValue){
+    let finalInvestment = parseFloat(initialInvestmentSelectedValue);
+    let cagrValue = parseFloat((cagrResult * finalInvestment / 100).toFixed(1));
+    console.log('cagrValue: ' + cagrValue);
+
+
+    for (let i = 1; i <= yearsSelected; i++){
+
+        finalInvestment = finalInvestment + cagrValue;
+        console.log('Investment year ' + i + ': ' + finalInvestment + 'USD');
+    }
+
+    return finalInvestment
+}
+
+function displayResult(cagrResult, finalInvestmentresult){
+   document.getElementById("result").innerHTML = "Compounded Annual Growth Rate Expected: " + cagrResult + '%' + ', and initial investment compounds to: ' + finalInvestmentresult.toFixed(1) + 'USD'; 
 
 }
 
@@ -88,7 +106,7 @@ function dfcFormula(){
 
        DFC = DFC + (cf / ((1 + discountRatePercentage)**i)) // cash flow year / (1 + discount rate) elevated to iteration
 
-       console.log('DFC inside for year '+ i + ': ' +  DFC);
+       //console.log('DFC inside for year '+ i + ': ' +  DFC);
 
     }
     
