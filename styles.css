@@ -1,19 +1,28 @@
 html, body{
     margin: 0;
     padding: 0;
-    font-family: sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: #f5f5f7; /* Soft Apple-like background */
+    color: #333;
 
 }
 
 .hero{
     height: 100vh;
-    background-color: rgb(39, 39, 39);
+    background-color: #1d1d1f;
     display: flex;
     justify-content: center;
     align-items: left;
     color: white;
     flex-direction: column;
-    padding: 20%;
+    padding: 10% 20%;
+}
+
+h1 {
+    font-size: 3rem; /* Larger Apple-style headings */
+    font-weight: 600;
+    margin-bottom: 2rem;
+    letter-spacing: -1px; /* Apple-style tighter text */
 }
 
 .select-container{
@@ -21,18 +30,43 @@ html, body{
     height: 30px;
     justify-content: left;
     align-items: center;
+    margin: 1rem 0;
+
 }
 
-select{
-    margin: 0 5%;
+select {
+    padding: 0.2rem 0.5rem;
+    background-color: #fff;
+    color: #333;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-left: 0.5rem;
 }
 
-button{
-    margin-top: 5%;
-    background-color: rgb(255, 255, 255);
+select:focus {
+    outline: none;
 }
 
-button:hover{
-    margin-top: 5%;
-    background-color: rgb(169, 169, 169);
+button {
+    margin-top: 2rem;
+    padding: 0.75rem 2rem;
+    background-color: #007aff; 
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+button:hover {
+    background-color: #005ecb;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15); 
+}
+
+button:active {
+    background-color: #004ba0;
 }
