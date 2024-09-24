@@ -67,7 +67,7 @@ body {
     flex-direction: column;
     padding-left: 1rem;
     align-items: start;
-    justify-content: start;
+    justify-content: center;
   }
 }
 .hero .dashboard-container .column-container .column-right button {
