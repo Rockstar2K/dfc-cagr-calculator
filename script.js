@@ -1,21 +1,12 @@
+
+//* User variables
 let discountRateSelected = 0; //user selects discount rate
 let yearsSelected = 0; //user selects the number of years of projection
 
 //CAGR
 let cf = 0;
-let endValue;
-
-
-/*
-const Microsoft = {
-    name: 'Microsoft', //name of the company
-    cfYear1: 59475, //free cash flow of microsoft in 2023
-    inBillions: true, // this defines if the company free cash flow is in millions or billions
-}
-*/
-
-
-
+let endValue = 0;
+let startValue = 0;
 
 
 class Company{
@@ -32,9 +23,10 @@ const companies = [
     new Company('Google', 69495, true)
 ];
 
+document.getElementById('calculate-btn').addEventListener('click', getSelectedOptions);
 
 
-//Calculate
+//* Calculate
 function getSelectedOptions(){
 
     const companySelect = document.getElementById('companySelect');
@@ -89,13 +81,13 @@ function getFinalInvestment(cagrResult, initialInvestmentSelectedValue){
 }
 
 function displayResult(cagrResult, finalInvestmentresult){
-   document.getElementById("result").innerHTML = "Compounded Annual Growth Rate Expected: " + cagrResult + '%' + ', and initial investment compounds to: ' + finalInvestmentresult.toFixed(1) + 'USD'; 
+   document.getElementById("result").innerHTML = "Compounded Annual Growth Rate Expected: " + cagrResult + '%' + ', and initial investment compounds to: ' + finalInvestmentresult.toFixed(1) + 'USD over a period of: ' + yearsSelected + 'years'; 
 
 }
 
 
 
-//DFC
+//*DFC
 
 
 function dfcFormula(){
@@ -126,3 +118,65 @@ function getCAGR(){
     return cagrPercentage;
 }
 
+
+//* Chart.js
+
+var url = 'https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=MSFT&apikey=FR6DI9WAD3BV4ROT';
+
+fetch(url)
+  .then(response => {
+    // Check if the response is ok (status code 200-299)
+    if (!response.ok) {
+      throw new Error('Network response was not ok ' + response.statusText);
+    }
+    return response.json(); // Parse the JSON from the response
+  })
+  .then(data => {
+    console.log('Stock data:', data); // Do something with the data
+  })
+  .catch(error => {
+    console.error('There has been a problem with your fetch operation:', error);
+  });
+
+console.log('stock api: ' + url)
+
+
+
+const ctx = document.getElementById('myChart').getContext('2d');
+  const myChart = new Chart(ctx, {
+    type: 'bar', // Tipo de gráfico
+    data: {
+      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+      datasets: [{
+        label: '# de votos',
+        data: [12, 19, 3, 5, 2, 3],
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)'
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true, // Allows height to change based on width
+
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });

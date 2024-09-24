@@ -9,20 +9,24 @@ html, body{
 
 .hero{
     height: 100vh;
-    background-color: #1d1d1f;
     display: flex;
     justify-content: center;
-    align-items: left;
-    color: white;
+    align-items: center;
+    color: #333;
     flex-direction: column;
-    padding: 10% 20%;
+    padding: 10%;
+}
+
+* {
+    margin: 0;
+    padding: 0;
 }
 
 h1 {
-    font-size: 3rem; /* Larger Apple-style headings */
+    font-size: 3rem; 
     font-weight: 600;
     margin-bottom: 2rem;
-    letter-spacing: -1px; /* Apple-style tighter text */
+    letter-spacing: -1px;
 }
 
 .select-container{
@@ -32,6 +36,43 @@ h1 {
     align-items: center;
     margin: 1rem 0;
 
+}
+
+.column-container{
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.column-left{
+    flex: 66%;
+}
+
+.column-right{
+    flex: 33%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.data-column-right{
+    display: flex;
+    gap: 0.5rem;
+}
+
+.data-p{
+    background-color: #f5f5f7;
+    display: inline-block;
+    padding: 8px 24px;
+    border-radius: 8px;
+
+}
+
+.dashboard-container{
+    background-color: white;
+    padding: 2rem;
+    border-radius: 1rem;
 }
 
 select {

@@ -1,67 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./styles.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./css/styles.css" />
     <title>Document</title>
-</head>
-<body>
-
+  </head>
+  <body>
     <div class="hero">
+      <h1>DFC & CAGR Calculator</h1>
 
-        <h1>DFC & CAGR Calculator</h1>
+      <div class="dashboard-container">
+        <div class="column-container">
+          <canvas
+            class="column-left"
+            id="myChart"
+        
+          ></canvas>
 
-        <div class="select-container">
-            <p>Select the Company: </p>
-
-
-            <select id="companySelect">
+          <div class="column-right">
+            <div class="data-column-right">
+              <p class="data-title">Company</p>
+              <select id="companySelect">
                 <option value="Microsoft">Microsoft</option>
                 <option value="Apple">Apple</option>
                 <option value="Google">Google</option>
-            </select>
+              </select>
+            </div>
+            <div class="data-column-right">
+              <p class="data-title">Years</p>
+              <select id="yearsSelect">
+                <option value="3">3 years</option>
+                <option value="5">5 years</option>
+                <option value="10">10 years</option>
+                <option value="15">15 years</option>
+                <option value="30">30 years</option>
+              </select>
+            </div>
+            <div class="data-column-right">
+              <p class="data-title">Discounted rate</p>
+              <select id="discountedRateSelect">
+                <option value="5">5% low risk</option>
+                <option value="15">15% medium risk</option>
+                <option value="30">30% high risk</option>
+              </select>
+            </div>
+            <div class="data-column-right">
+              <p class="data-title">Initial Investment</p>
+              <input
+                type="number"
+                name="initial-investment"
+                id="initial-investment"
+              />
+            </div>
 
+            <button id="calculate-btn">Calculate</button>
+          </div>
+
+          
+          
         </div>
 
-        <div class="select-container">
-            <p>Select the Number of Years to project: </p>
 
-            <select id="yearsSelect">
-                <option value=3 >3 years</option>
-                <option value=5 >5 years</option>
-                <option value=10 >10 years</option>
-                <option value=15 >15 years</option>
-                <option value=30 >30 years</option>
-            </select>
-
-        </div>
-
-        <div class="select-container">
-            <p>Select Discounted rate: </p>
-
-            <select id="discountedRateSelect">
-                <option value=5 >5% low risk</option>
-                <option value=15 >15% medium risk</option>
-                <option value=30 >30% high risk</option>
-    
-            </select>
-        </div>
-
-        <div class="select-container">
-            <p>Put your initial investment in USD: </p>
-
-            <input type="number" name="initial-investment" id="initial-investment">
-        </div>
-
-        <button onclick="getSelectedOptions()">Calculate</button>
         <p id="result"></p>
-        <p>Codigo escrito por mi :) </p>
-
+      </div>
     </div>
 
-    <script src="./script.js"></script>
-    
-</body>
+    <script type="module" src="./script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </body>
 </html>
-
