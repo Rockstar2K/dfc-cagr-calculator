@@ -82,10 +82,10 @@ async function getSelectedOptions() {
     yearsSelected
   );
 
-  //await getStockData(stock);
+  await getStockData(stock);
 
   let futureStockPrice = stockPriceCagrProjection(cagrPercentageResult);
-  //updateChart(stock);
+  updateChart(stock);
 
   //!updateChart(stock, futureStockPrice);
   displayResult(cagrPercentageResult, initialInvestment, finalInvestmentResult);
