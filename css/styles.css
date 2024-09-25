@@ -101,20 +101,20 @@ body {
 .hero .dashboard-container .column-container .column-right #display-investment b {
   font-size: 20px;
 }
-.hero .dashboard-container .column-container .column-right #display-investment #display-investment_final-investment b {
-  color: green;
-}
-.hero .dashboard-container .column-container .column-right #display-investment #display-investment_cagr b.low {
+.hero .dashboard-container .column-container .column-right #display-investment #display-investment_final-investment b.red {
   color: red;
 }
-.hero .dashboard-container .column-container .column-right #display-investment #display-investment_cagr b.medium {
-  color: rgb(187, 187, 0);
-}
-.hero .dashboard-container .column-container .column-right #display-investment #display-investment_cagr b.high {
+.hero .dashboard-container .column-container .column-right #display-investment #display-investment_final-investment b.green {
   color: green;
 }
-.hero .dashboard-container .column-container .column-right #display-investment #display-investment_cagr b.normal {
-  color: grey;
+.hero .dashboard-container .column-container .column-right #display-investment #display-investment_cagr b.red {
+  color: red;
+}
+.hero .dashboard-container .column-container .column-right #display-investment #display-investment_cagr b.yellow {
+  color: rgb(187, 187, 0);
+}
+.hero .dashboard-container .column-container .column-right #display-investment #display-investment_cagr b.green {
+  color: green;
 }
 .hero .dashboard-container .data-column-right {
   display: flex;

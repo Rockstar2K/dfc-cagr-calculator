@@ -3,11 +3,10 @@ let discountRateSelected = 0;
 let yearsSelected = 0;
 let initialInvestment = 0;
 
-//CAGR
-let cashFlow = 0;
 
-let projectedStockPrice = 0;
 let currentStockPrice = 0;
+
+
 
 class Company {
   constructor(name, cashFlow, inBillions, stockName) {
@@ -30,6 +29,14 @@ document
 
 //* Calculate
 async function getSelectedOptions() {
+
+  let cashFlow = 0;
+  let yearsSelected = 0; 
+  let discountRateSelected = 0;
+  let initialInvestment = 0;
+  let stock = ';'
+
+
   const companySelect = document.getElementById("companySelect");
   const companySelectedValue = companySelect.value;
 
@@ -38,85 +45,94 @@ async function getSelectedOptions() {
     (company) => company.name === companySelectedValue
   );
   console.log("selectedCompany: " + selectedCompany.name);
-  cashFlow = selectedCompany.cashFlow;
+  cashFlow = parseInt(selectedCompany.cashFlow, 10)
 
   const yearsSelect = document.getElementById("yearsSelect");
-  yearsSelected = yearsSelect.value;
+  yearsSelected = parseInt(yearsSelect.value, 10);
 
   const discountedRateSelect = document.getElementById("discountedRateSelect");
-  discountRateSelected = discountedRateSelect.value;
+  discountRateSelected = parseInt(discountedRateSelect.value, 10);
 
   const initialInvestmentSelect = document.getElementById("initial-investment");
-  initialInvestment = initialInvestmentSelect.value;
+  initialInvestment = parseInt(initialInvestmentSelect.value);
+
+  stock = selectedCompany.stockName;
+
 
   console.log(
-    "selectedCompany: " +
+    " selectedCompany: " +
       selectedCompany.name +
-      "selectedCompany cashFlow: " +
+      " selectedCompany cashFlow: " +
       cashFlow +
-      "Years selected: " +
+      " Years selected: " +
       yearsSelected +
-      "Discounted Rate Selected: " +
+      " Discounted Rate Selected: " +
       discountRateSelected +
-      "your initial investment was: " +
+      " your initial investment was: " +
       initialInvestment
   );
 
-  if (!initialInvestment || initialInvestment == 0) {
-    alert("please insert your initial investment");
+  if (isNaN(initialInvestment) || initialInvestment <= 0) {
+    alert("Please insert a valid initial investment");
+    return; // Exit the function
   }
 
-  let cagrPercentageResult = getCAGR();
-  let finalInvestmentresult = getFinalInvestment(
-    cagrPercentageResult,
-    initialInvestment
-  );
+  let endValue = dfcFormula(discountRateSelected, yearsSelected, cashFlow);
+  let cagrPercentageResult = getCAGR(cashFlow, endValue, yearsSelected);
+  let finalInvestmentResult = getFinalInvestment(cagrPercentageResult, initialInvestment, yearsSelected);
 
-  let stock = selectedCompany.stockName;
   await getStockData(stock);
+
   let futureStockPrice = stockPriceCagrProjection(cagrPercentageResult);
   updateChart(stock);
   //updateChart(stock, futureStockPrice);
-  console.log("before display result");
-  displayResult(cagrPercentageResult, initialInvestment, finalInvestmentresult);
+  displayResult(cagrPercentageResult, initialInvestment, finalInvestmentResult);
 }
 
 //* Final Investment Calculation
 
-function getFinalInvestment(cagrResult, initialInvestment) {
-  let finalInvestment = parseFloat(initialInvestment);
-  let cagrValue = parseFloat(((cagrResult * finalInvestment) / 100).toFixed(1));
-  console.log("cagrValue: " + cagrValue);
+//* Final Investment Calculation
+function getFinalInvestment(cagrResult, initialInvestment, yearsSelected) {
+  let finalInvestment = initialInvestment; // Start with the initial investment
+  let cagrDecimal = cagrResult / 100; // Convert CAGR from percentage to decimal
+
+  console.log("Initial Investment: " + finalInvestment + " USD");
 
   for (let i = 1; i <= yearsSelected; i++) {
-    finalInvestment = finalInvestment + cagrValue;
-    console.log("Investment year " + i + ": " + finalInvestment + "USD");
+    finalInvestment *= (1 + cagrDecimal); // Compound the investment each year
+    console.log("Investment year " + i + ": " + finalInvestment.toFixed(2) + " USD");
   }
 
-  return finalInvestment;
+  return finalInvestment; // Return the final investment after all years
 }
+
 
 //* Display result
 
 function displayResult(
   cagrPercentageResult,
   initialInvestment,
-  finalInvestmentresult
+  finalInvestmentResult
 ) {
   let cagrClass;
-  if (cagrPercentageResult >= 30) {
-    cagrClass = 'high'; // Green
-  } else if (cagrPercentageResult >= 20) {
-    cagrClass = 'medium'; // Yellow
+  if (cagrPercentageResult >= 25) {
+    cagrClass = 'green'; // Green
   } else if (cagrPercentageResult >= 10) {
-    cagrClass = 'low'; // Red
-  } else {
-    cagrClass = 'normal'; //grey
+    cagrClass = 'yellow'; // Yellow
+  } else if (cagrPercentageResult < 10) {
+    cagrClass = 'red'; // Red
+  } 
+
+  let finalInvestmentClass;
+  if (finalInvestmentResult > initialInvestment){
+    finalInvestmentClass = 'green'
+  } else{
+    finalInvestmentClass = 'red'
   }
 
   document.getElementById("display-investment").innerHTML = `
     <p id="display-investment_initial-investment"> Initial Investment: </br><b>${initialInvestment} USD </b></p>
-    <p id="display-investment_final-investment"> Final Investment: </br><b>${finalInvestmentresult.toFixed(0)} USD </b></p>
+    <p id="display-investment_final-investment"> Final Investment: </br><b class="${finalInvestmentClass}">${finalInvestmentResult.toFixed(0)} USD </b></p>
     <p id="display-investment_cagr"> CAGR: </br><b class="${cagrClass}">${cagrPercentageResult} %</b></p>
   `;
 }
@@ -125,34 +141,39 @@ function displayResult(
 //* Stock Price projected with CAGR
 
 function stockPriceCagrProjection(cagr) {
-  cagr = cagr / 100;
-  projectedStockPrice = currentStockPrice; // Start with current price
-
-  for (let i = 1; i <= yearsSelected; i++) {
-    projectedStockPrice = currentStockPrice * cagr;
+  try {
+    cagr = cagr / 100;
+    projectedStockPrice = currentStockPrice; // Start with current price
+  
+    for (let i = 1; i <= yearsSelected; i++) {
+        projectedStockPrice *= (1 + cagr); // Update with compounding
+    }
+    
+  
+    console.log("FINAL STOCK PRICE: " + projectedStockPrice);
+    return projectedStockPrice;
+    
+  } catch (error) {
+    console.log(error);
   }
-
-  console.log("FINAL STOCK PRICE: " + projectedStockPrice);
-  return projectedStockPrice;
+ 
 }
 
 //*DFC
 
-function dfcFormula() {
+function dfcFormula(discountRateSelected, yearsSelected, cashFlow) {
   let DFC = 0;
   let discountRatePercentage = discountRateSelected / 100; //we make this a percentage
 
   for (let i = 1; i <= yearsSelected; i++) {
     DFC = DFC + cashFlow / (1 + discountRatePercentage) ** i; // cash flow year / (1 + discount rate) elevated to iteration
-    //console.log('DFC inside for year '+ i + ': ' +  DFC);
+    console.log('DFC inside for year '+ i + ': ' +  DFC);
   }
 
   return DFC;
 }
 
-function getCAGR() {
-  let endValue = dfcFormula();
-  let startValue = cashFlow;
+function getCAGR(startValue, endValue, yearsSelected) {
 
   let cagr = (endValue / startValue) ** (1 / yearsSelected) - 1;
   let cagrPercentage = (cagr * 100).toFixed(2);

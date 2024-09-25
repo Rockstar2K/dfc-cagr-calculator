@@ -107,28 +107,30 @@ body {
             font-size: 20px;
           }
           #display-investment_final-investment{
-            b{
+            b.red{
+              color: red;
+            }
+            b.green{
               color: green;
             }
           }
 
           #display-investment_cagr {
-            b.low {
+            b.red {
               color: red;
             }
             
-            b.medium {
+            b.yellow {
               color: rgb(187, 187, 0);
             }
           
-            b.high {
+            b.green {
               color: green;
             }
           
-            b.normal {
-              color: grey; 
-            }
           }
+
+
           
         }
       }
