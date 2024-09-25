@@ -1,37 +1,40 @@
+
+
 //* User variables
-let discountRateSelected = 0; //user selects discount rate
-let yearsSelected = 0; //user selects the number of years of projection
+let discountRateSelected = 0;
+let yearsSelected = 0; 
 let initialInvestment = 0;
 
 
 //CAGR
-let cf = 0;
-let endValue = 0;
-let startValue = 0;
+let cashFlow = 0;
+
+
+let projectedStockPrice = 0;
+let currentStockPrice = 0;
+
 
 class Company {
-  constructor(name, cfYear1, inBillions) {
+  constructor(name, cashFlow, inBillions, stockName) {
     this.name = name;
-    this.cfYear1 = cfYear1;
+    this.cashFlow = cashFlow;
     this.inBillions = inBillions;
+    this.stockName = stockName;
   }
 }
 
 const companies = [
-  new Company("Microsoft", 59475, true),
-  new Company("Apple", 99584, true),
-  new Company("Google", 69495, true),
+  new Company("Microsoft", 59475, true, 'MSFT'),
+  new Company("Apple", 99584, true, 'AAPL'),
+  new Company("Google", 69495, true, 'GOOG'),
 ];
 
 document
   .getElementById("calculate-btn")
   .addEventListener("click", getSelectedOptions);
-document
-  .getElementById("calculate-btn")
-  .addEventListener("click", getStockData);
 
 //* Calculate
-function getSelectedOptions() {
+async function getSelectedOptions() {
   const companySelect = document.getElementById("companySelect");
   const companySelectedValue = companySelect.value;
 
@@ -40,8 +43,8 @@ function getSelectedOptions() {
     (company) => company.name === companySelectedValue
   );
   console.log("selectedCompany: " + selectedCompany.name);
-  cf = selectedCompany.cfYear1;
-  console.log("selectedCompany cf: " + cf);
+  cashFlow = selectedCompany.cashFlow;
+  console.log("selectedCompany cashFlow: " + cashFlow);
 
   const yearsSelect = document.getElementById("yearsSelect");
   yearsSelected = yearsSelect.value;
@@ -65,6 +68,9 @@ function getSelectedOptions() {
     initialInvestment
   );
 
+  let stock = selectedCompany.stockName;
+  await getStockData(stock);
+  console.log('awaited and current stock price is: ' + currentStockPrice)
   stockPriceCagrProjection(cagrPercentageResult);
   displayResult(cagrPercentageResult, finalInvestmentresult);
 }
@@ -102,13 +108,13 @@ function displayResult(cagrPercentageResult, finalInvestmentresult) {
 
 function stockPriceCagrProjection(cagr) {
   cagr = cagr / 100;
-  let stockPrice = 100;
+  projectedStockPrice = currentStockPrice; // Start with current price
 
   for (let i = 1; i <= yearsSelected; i++) {
-    stockPrice = stockPrice * cagr;
+    projectedStockPrice = currentStockPrice * cagr;
   }
 
-  console.log('FINAL STOCK PRICE: ' + stockPrice)
+  console.log('FINAL STOCK PRICE: ' + projectedStockPrice)
 }
 
 //*DFC
@@ -118,10 +124,8 @@ function dfcFormula() {
   let discountRatePercentage = discountRateSelected / 100; //we make this a percentage
 
   for (let i = 1; i <= yearsSelected; i++) {
-    // here we do a cicle for the number of years of projection, we declare i = 1 because we start in year 1
 
-    DFC = DFC + cf / (1 + discountRatePercentage) ** i; // cash flow year / (1 + discount rate) elevated to iteration
-
+    DFC = DFC + cashFlow / (1 + discountRatePercentage) ** i; // cash flow year / (1 + discount rate) elevated to iteration
     //console.log('DFC inside for year '+ i + ': ' +  DFC);
   }
 
@@ -129,8 +133,8 @@ function dfcFormula() {
 }
 
 function getCAGR() {
-  endValue = dfcFormula();
-  startValue = cf;
+  let endValue = dfcFormula();
+  let startValue = cashFlow;
 
   let cagr = (endValue / startValue) ** (1 / yearsSelected) - 1;
   let cagrPercentage = (cagr * 100).toFixed(2);
@@ -140,89 +144,101 @@ function getCAGR() {
   return cagrPercentage;
 }
 
-//* Chart.js
-function getStockData() {
-  const urls = {
-    msft: "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=MSFT&apikey=FR6DI9WAD3BV4ROT",
-    aapl: "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=AAPL&apikey=FR6DI9WAD3BV4ROT",
-    goog: "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=GOOG&apikey=FR6DI9WAD3BV4ROT",
-  };
+//* STOCK DATA (lo que más tiempo me tomo :P)
 
-  // Loop through the URLs and fetch the data
-  for (const stock in urls) {
-    fetchStockData(urls[stock], stock); // Call the fetchStockData function for each stock
-  }
+let stockData = {};
+
+async function getStockData(stock) {
+  const baseUrl = "https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol=";
+  const apiKey = "&apikey=FR6DI9WAD3BV4ROT";
+  const url = `${baseUrl}${stock}${apiKey}`; 
+  
+  await fetchStockData(url, stock); 
+  
+  console.log('All stock data:', stockData); 
+
+  // Now update the chart after fetching data for a stock
+  updateChart(stock);
+
+
 }
 
 // Function to fetch data for each stock symbol
-function fetchStockData(url, stockSymbol) {
-  fetch(url)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok " + response.statusText);
-      }
-      return response.json(); // Parse the JSON from the response
-    })
-    .then((data) => {
-      console.log(`Stock data for ${stockSymbol}:`, data);
-      if (data.Information) {
-        console.warn(`API limit hit for ${stockSymbol}: ${data.Information}`);
-        return; // Don't update the data
-      }
+async function fetchStockData(url, stockSymbol) {
+  try {
+    const response = await fetch(url); // Await the fetch call
+    if (!response.ok) {
+      throw new Error("Network response was not ok " + response.statusText);
+    }
+    
+    const data = await response.json(); // Await the parsing of the JSON data
+    console.log(`Stock data for ${stockSymbol}:`, data);
 
-      stockDataStorage[stockSymbol] = data;
-      console.log(
-        `Stored stock data for ${stockSymbol}:`,
-        stockDataStorage[stockSymbol]
-      );
-    })
-    .catch((error) => {
-      console.error(
-        `There has been a problem fetching data for ${stockSymbol}:`,
-        error
-      );
-    });
+    if (data.Information) { //?esta es la estructura del objeto que llega cuando se acaba el limite de la API
+      console.warn(`API limit hit for ${stockSymbol}: ${data.Information}`);
+      return; // Don't update the data
+    } else{ //update data
+      storeRightStockData(stockSymbol, data)
+    }
+
+  } catch (error) {
+    console.error(`There has been a problem fetching data for ${stockSymbol}:`, error);
+  }
 }
 
-// Call the function to get the stock data
+function storeRightStockData(stockSymbol, data) {
+  // Initialize stockData entry for this stockSymbol if it doesn't exist
+  if (!stockData[stockSymbol]) {
+    stockData[stockSymbol] = { closePrices: [], dates: [] };
+  }
 
-const ctx = document.getElementById("myChart").getContext("2d");
-const myChart = new Chart(ctx, {
-  type: "bar", // Tipo de gráfico
-  data: {
-    labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-    datasets: [
-      {
-        label: "# de votos",
-        data: [12, 19, 3, 5, 2, 3],
-        backgroundColor: [
-          "rgba(255, 99, 132, 0.2)",
-          "rgba(54, 162, 235, 0.2)",
-          "rgba(255, 206, 86, 0.2)",
-          "rgba(75, 192, 192, 0.2)",
-          "rgba(153, 102, 255, 0.2)",
-          "rgba(255, 159, 64, 0.2)",
-        ],
-        borderColor: [
-          "rgba(255, 99, 132, 1)",
-          "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
-          "rgba(75, 192, 192, 1)",
-          "rgba(153, 102, 255, 1)",
-          "rgba(255, 159, 64, 1)",
-        ],
-        borderWidth: 1,
-      },
-    ],
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: true, // Allows height to change based on width
+  // Access the 'Monthly Time Series' object directly from the response data
+  const timeSeries = data["Monthly Adjusted Time Series"];
 
-    scales: {
-      y: {
-        beginAtZero: true,
-      },
+  // Loop through the dates in 'Monthly Time Series' and extract the 'close' prices
+  for (const date in timeSeries) {
+      if (timeSeries.hasOwnProperty(date)) {
+        stockData[stockSymbol].dates.push(date); // Store the dates
+        stockData[stockSymbol].closePrices.push(timeSeries[date]["4. close"]); // Store the 'close' prices
+
+        currentStockPrice = parseFloat(timeSeries[date]["4. close"]); // Parse to float
+        
+      }
+    }
+
+  console.log('currentStockPrice: ' + currentStockPrice);
+
+}
+
+//* CHART.JS
+
+function updateChart(stockSymbol) {
+  const dates = stockData[stockSymbol].dates;
+  const closePrices = stockData[stockSymbol].closePrices;
+
+  const ctx = document.getElementById('myChart').getContext('2d');
+  const myChart = new Chart(ctx, {
+    type: 'line', 
+    data: {
+      labels: dates, // Dates as x-axis labels
+      datasets: [{
+        label: `${stockSymbol.toUpperCase()} Monthly Close Prices`,
+        data: closePrices, // Close prices as the data
+        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        fill: false,
+        tension: 0.1
+      }]
     },
-  },
-});
+    options: {
+      scales: {
+        x: {
+          type: 'time', 
+          time: {
+            unit: 'month', 
+          }
+        }
+      }
+    }
+  });
+}
