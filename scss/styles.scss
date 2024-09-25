@@ -194,5 +194,31 @@ body {
         flex-direction: row;
       }
     }
+
+    .history-container{
+
+      margin-top: 2rem;
+      background: lightgrey;
+      border-radius: 1rem;
+
+      #toggleHistoryBtn{
+        border: none;
+        padding: 0.5rem 2rem;
+        display: inline-block;
+        width: 100%;
+        text-align: left;
+  
+      }
+
+      #toggleHistoryContent{
+        padding: 2rem;
+        gap: 1rem;
+        display: flex;
+        flex-direction: column;
+      }
+
+    }
+
+    
   }
 }

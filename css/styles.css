@@ -167,5 +167,23 @@ body {
     flex-direction: row;
   }
 }
+.hero .dashboard-container .history-container {
+  margin-top: 2rem;
+  background: lightgrey;
+  border-radius: 1rem;
+}
+.hero .dashboard-container .history-container #toggleHistoryBtn {
+  border: none;
+  padding: 0.5rem 2rem;
+  display: inline-block;
+  width: 100%;
+  text-align: left;
+}
+.hero .dashboard-container .history-container #toggleHistoryContent {
+  padding: 2rem;
+  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+}
 
 /*# sourceMappingURL=styles.css.map */
