@@ -1,3 +1,6 @@
+import {saveToHistory, showHistory } from './_storage.js'
+import { updateChart } from './_chart.js'
+
 //* User variables
 let discountRateSelected = 0;
 let yearsSelected = 0;
@@ -85,7 +88,7 @@ async function getSelectedOptions() {
   await getStockData(stock);
 
   let futureStockPrice = stockPriceCagrProjection(cagrPercentageResult);
-  updateChart(stock);
+  updateChart(stock, stockData);
 
   //!updateChart(stock, futureStockPrice);
   displayResult(cagrPercentageResult, initialInvestment, finalInvestmentResult);
@@ -98,74 +101,16 @@ async function getSelectedOptions() {
     finalInvestmentResult,
     cagrPercentageResult
   );
+  
   showHistory();
 }
 
-//* save to history
-let searchHistory = JSON.parse(localStorage.getItem("searchHistory")) || [];
-
-function saveToHistory(
-  selectedCompany,
-  yearsSelected,
-  discountRateSelected,
-  initialInvestment,
-  finalInvestment,
-  cagrPercentageResult
-) {
-  let search = {
-    companyHistory: selectedCompany,
-    yearsHistory: yearsSelected,
-    initialInvestmentHistory: initialInvestment,
-    discountRateHistory: discountRateSelected,
-    finalInvestmentHistory: finalInvestment,
-    cagrHistory: cagrPercentageResult,
-  };
-
-  searchHistory.push(search);
-
-  localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
-
-  console.log("Updated search history:", searchHistory);
-}
-
-const toggleBtn = document.getElementById("toggleHistoryBtn");
-const toggleContent = document.getElementById("toggleHistoryContent");
-
-toggleBtn.addEventListener("click", function () {
-  // Toggle the visibility of the content
-  if (toggleContent.style.display === "none") {
-    toggleContent.style.display = "block";
-    toggleBtn.textContent = "Hide History"; // Change button text
-  } else {
-    toggleContent.style.display = "none";
-    toggleBtn.textContent = "Show History"; // Change button text
-  }
-});
-
 showHistory();
-function showHistory() {
-  
-  if (searchHistory.length > 0) { //add to history toggle
 
-    toggleContent.innerHTML = "";
 
-    searchHistory.forEach((search, index) => {
-      const searchItem = `
-        <div>
-          <p>${search.companyHistory} <strong>#${index + 1}</strong></p>
-          <p>Years: ${search.yearsHistory}</p>
-          <p>Initial Investment: <strong>${search.initialInvestmentHistory} USD</strong></p>
-          <p>Discount Rate: <strong>${search.discountRateHistory} %</strong></p>
-          <p>Final Investment: <strong>${search.finalInvestmentHistory.toFixed(0)} USD</strong></p>
-          <p>CAGR: <strong>${search.cagrHistory}%</strong></p>
-        </div><hr>
-      `;
-      toggleContent.innerHTML += searchItem;
-    });
-  } else {
-    toggleContent.innerHTML = "<p>No search history available.</p>";
-  }
-}
+
+
+
 
 //* Final Investment Calculation
 function getFinalInvestment(cagrResult, initialInvestment, yearsSelected) {
@@ -320,45 +265,6 @@ function storeRightStockData(stockSymbol, data) {
     }
 
     console.log("currentStockPrice: " + currentStockPrice);
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-//* CHART.JS
-
-function updateChart(stockSymbol) {
-  try {
-    const dates = stockData[stockSymbol].dates;
-    const closePrices = stockData[stockSymbol].closePrices;
-
-    const ctx = document.getElementById("myChart").getContext("2d");
-    const myChart = new Chart(ctx, {
-      type: "line",
-      data: {
-        labels: dates, // Dates as x-axis labels
-        datasets: [
-          {
-            label: `${stockSymbol.toUpperCase()} Monthly Close Prices`,
-            data: closePrices, // Close prices as the data
-            borderColor: "rgba(75, 192, 192, 1)",
-            backgroundColor: "rgba(75, 192, 192, 0.2)",
-            fill: false,
-            tension: 0.1,
-          },
-        ],
-      },
-      options: {
-        scales: {
-          x: {
-            type: "time",
-            time: {
-              unit: "month",
-            },
-          },
-        },
-      },
-    });
   } catch (error) {
     console.log(error);
   }
