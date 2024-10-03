@@ -1,0 +1,58 @@
+.history-container{
+
+    margin-top: 2rem;
+    background: lightgrey;
+    border-radius: 1rem;
+
+    
+
+    #toggleHistoryBtn{
+      border: none;
+      padding: 0.5rem 2rem;
+      display: inline-block;
+      width: 100%;
+      text-align: left;
+
+    }
+
+    #toggleHistoryContent{
+      padding: 2rem;
+      gap: 1rem;
+      display: flex;
+      flex-direction: column;
+
+      .history-individual-container{
+        display: flex;
+        flex-wrap: wrap;
+        background-color: rgb(236, 236, 236);
+        padding: 1rem;
+        position: relative; /* Positioning context for child */
+        flex-direction: column;
+
+        p{
+            padding: 0.25rem;
+        }
+
+        .close-history{
+            background-color: red;
+            padding: 0.25rem;
+            border-radius: 0.25rem;
+            color: white;
+            position: absolute; /* Position relative to the parent */
+            top: 0;            /* Align to the top */
+            right: 0;           /* Align to the left */
+            width: 1.5rem;
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+
+            &:hover{
+                background-color: rgb(113, 0, 0);
+                color: red;
+            }
+        }
+
+      }
+    }
+
+  }

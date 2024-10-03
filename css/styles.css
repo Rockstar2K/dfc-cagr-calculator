@@ -1,3 +1,50 @@
+.history-container {
+  margin-top: 2rem;
+  background: lightgrey;
+  border-radius: 1rem;
+}
+.history-container #toggleHistoryBtn {
+  border: none;
+  padding: 0.5rem 2rem;
+  display: inline-block;
+  width: 100%;
+  text-align: left;
+}
+.history-container #toggleHistoryContent {
+  padding: 2rem;
+  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+.history-container #toggleHistoryContent .history-individual-container {
+  display: flex;
+  flex-wrap: wrap;
+  background-color: rgb(236, 236, 236);
+  padding: 1rem;
+  position: relative; /* Positioning context for child */
+  flex-direction: column;
+}
+.history-container #toggleHistoryContent .history-individual-container p {
+  padding: 0.25rem;
+}
+.history-container #toggleHistoryContent .history-individual-container .close-history {
+  background-color: red;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  color: white;
+  position: absolute; /* Position relative to the parent */
+  top: 0; /* Align to the top */
+  right: 0; /* Align to the left */
+  width: 1.5rem;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+.history-container #toggleHistoryContent .history-individual-container .close-history:hover {
+  background-color: rgb(113, 0, 0);
+  color: red;
+}
+
 html,
 body {
   margin: 0;
@@ -10,10 +57,11 @@ body {
 * {
   margin: 0;
   padding: 0;
+  transition: all 0.3s ease-in;
 }
 
 .hero {
-  height: 100vh;
+  height: auto;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -26,6 +74,7 @@ body {
   padding: 2rem;
   border-radius: 1rem;
   width: 100%;
+  height: auto;
 }
 .hero .dashboard-container .column-container {
   width: 100%;
@@ -166,24 +215,6 @@ body {
   .hero .dashboard-container .data-column-right {
     flex-direction: row;
   }
-}
-.hero .dashboard-container .history-container {
-  margin-top: 2rem;
-  background: lightgrey;
-  border-radius: 1rem;
-}
-.hero .dashboard-container .history-container #toggleHistoryBtn {
-  border: none;
-  padding: 0.5rem 2rem;
-  display: inline-block;
-  width: 100%;
-  text-align: left;
-}
-.hero .dashboard-container .history-container #toggleHistoryContent {
-  padding: 2rem;
-  gap: 1rem;
-  display: flex;
-  flex-direction: column;
 }
 
 /*# sourceMappingURL=styles.css.map */

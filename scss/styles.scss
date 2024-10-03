@@ -1,3 +1,5 @@
+@use 'history';
+
 html,
 body {
   margin: 0;
@@ -11,10 +13,11 @@ body {
 * {
   margin: 0;
   padding: 0;
+  transition: all 0.3s ease-in;
 }
 
 .hero {
-  height: 100vh;
+  height: auto;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -27,6 +30,7 @@ body {
     padding: 2rem;
     border-radius: 1rem;
     width: 100%;
+    height: auto;
 
     .column-container {
       width: 100%;
@@ -195,30 +199,9 @@ body {
       }
     }
 
-    .history-container{
-
-      margin-top: 2rem;
-      background: lightgrey;
-      border-radius: 1rem;
-
-      #toggleHistoryBtn{
-        border: none;
-        padding: 0.5rem 2rem;
-        display: inline-block;
-        width: 100%;
-        text-align: left;
   
-      }
-
-      #toggleHistoryContent{
-        padding: 2rem;
-        gap: 1rem;
-        display: flex;
-        flex-direction: column;
-      }
-
-    }
 
     
   }
 }
+
