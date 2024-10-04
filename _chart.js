@@ -1,16 +1,28 @@
+let myChart; // Declare a variable to hold the chart instance
 
 export function updateChart(stockSymbol, stockData) {
-console.log('chart JS');
+  console.log('chart JS');
 
-    try {
-      const dates = stockData[stockSymbol].dates;
-      const closePrices = stockData[stockSymbol].closePrices;
-  
-      const ctx = document.getElementById("myChart").getContext("2d");
-      const myChart = new Chart(ctx, {
+  try {
+    const dates = stockData[stockSymbol].dates;
+    const closePrices = stockData[stockSymbol].closePrices;
+
+    // Get the context of the canvas element
+    const ctx = document.getElementById("myChart").getContext("2d");
+
+    // Check if the chart instance already exists
+    if (myChart) {
+
+      myChart.data.labels = dates; 
+      myChart.data.datasets[0].data = closePrices; 
+      myChart.data.datasets[0].label = `${stockSymbol.toUpperCase()} Monthly Close Prices`; // Update label
+      myChart.update();  
+    } else {
+      // Create a new chart instance if it doesn't exist
+      myChart = new Chart(ctx, {
         type: "line",
         data: {
-          labels: dates, // Dates as x-axis labels
+          labels: dates,
           datasets: [
             {
               label: `${stockSymbol.toUpperCase()} Monthly Close Prices`,
@@ -33,8 +45,8 @@ console.log('chart JS');
           },
         },
       });
-    } catch (error) {
-      console.log(error);
     }
+  } catch (error) {
+    console.log(error);
   }
-  
+}

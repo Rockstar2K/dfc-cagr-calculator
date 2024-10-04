@@ -26,10 +26,10 @@ toggleBtn.addEventListener("click", function () {
   // Toggle the visibility of the content
   if (toggleContent.style.display === "none") {
     toggleContent.style.display = "block";
-    toggleBtn.textContent = "Hide History"; // Change button text
+    toggleBtn.textContent = "- Hide History"; // Change button text
   } else {
     toggleContent.style.display = "none";
-    toggleBtn.textContent = "Show History"; // Change button text
+    toggleBtn.textContent = "+ Show History"; // Change button text
   }
 });
 

@@ -129,6 +129,8 @@ function getFinalInvestment(cagrResult, initialInvestment, yearsSelected) {
   return finalInvestment; // Return the final investment after all years
 }
 
+
+
 //* Display result
 
 function displayResult(
@@ -160,6 +162,8 @@ function displayResult(
     <p id="display-investment_cagr"> CAGR: </br><b class="${cagrClass}">${cagrPercentageResult} %</b></p>
   `;
 }
+
+
 
 //* Stock Price projected with CAGR
 
