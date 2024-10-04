@@ -87,10 +87,17 @@ async function getSelectedOptions() {
 
   await getStockData(stock);
 
-  let futureStockPrice = stockPriceCagrProjection(cagrPercentageResult);
-  updateChart(stock, stockData);
+  let futureStockPrice = stockPriceCagrProjection(cagrPercentageResult, yearsSelected);
+  //updateChart(stock, stockData);
 
-  //!updateChart(stock, futureStockPrice);
+  console.log('Current Stock Price: ' + currentStockPrice)
+  // Get the last date and calculate the future date
+  const lastDate = new Date(stockData[stock].dates.slice(-1)[0]);
+  const futureDate = new Date(lastDate.setFullYear(lastDate.getFullYear() + yearsSelected));
+
+  //! trying this
+  updateChart(stock, stockData, futureStockPrice, futureDate);
+
   displayResult(cagrPercentageResult, initialInvestment, finalInvestmentResult);
 
   saveToHistory(
@@ -167,10 +174,10 @@ function displayResult(
 
 //* Stock Price projected with CAGR
 
-function stockPriceCagrProjection(cagr) {
+function stockPriceCagrProjection(cagr, yearsSelected) {
   try {
     cagr = cagr / 100;
-    projectedStockPrice = currentStockPrice; // Start with current price
+    let projectedStockPrice = currentStockPrice; // Start with current price
 
     for (let i = 1; i <= yearsSelected; i++) {
       projectedStockPrice *= 1 + cagr; // Update with compounding
@@ -178,6 +185,7 @@ function stockPriceCagrProjection(cagr) {
 
     console.log("FINAL STOCK PRICE: " + projectedStockPrice);
     return projectedStockPrice;
+
   } catch (error) {
     console.log(error);
   }
