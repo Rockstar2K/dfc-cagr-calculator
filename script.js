@@ -88,15 +88,10 @@ async function getSelectedOptions() {
   await getStockData(stock);
 
   let futureStockPrice = stockPriceCagrProjection(cagrPercentageResult, yearsSelected);
-  //updateChart(stock, stockData);
 
-  console.log('Current Stock Price: ' + currentStockPrice)
-  // Get the last date and calculate the future date
-  const lastDate = new Date(stockData[stock].dates.slice(-1)[0]);
-  const futureDate = new Date(lastDate.setFullYear(lastDate.getFullYear() + yearsSelected));
 
   //! trying this
-  updateChart(stock, stockData, futureStockPrice, futureDate);
+  updateChart(stock, stockData, futureStockPrice, yearsSelected);
 
   displayResult(cagrPercentageResult, initialInvestment, finalInvestmentResult);
 
