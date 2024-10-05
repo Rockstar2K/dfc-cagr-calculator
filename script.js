@@ -87,8 +87,8 @@ async function getSelectedOptions() {
 
   await getStockData(stock);
 
+  console.log('CURRENT STOCK PRICE: '+ currentStockPrice)
   let futureStockPrice = stockPriceCagrProjection(cagrPercentageResult, yearsSelected);
-
 
   //! trying this
   updateChart(stock, stockData, futureStockPrice, yearsSelected);
@@ -175,7 +175,7 @@ function stockPriceCagrProjection(cagr, yearsSelected) {
     let projectedStockPrice = currentStockPrice; // Start with current price
 
     for (let i = 1; i <= yearsSelected; i++) {
-      projectedStockPrice *= 1 + cagr; // Update with compounding
+      projectedStockPrice *= (1 + cagr); // Update with compounding
     }
 
     console.log("FINAL STOCK PRICE: " + projectedStockPrice);
@@ -266,9 +266,12 @@ function storeRightStockData(stockSymbol, data) {
       if (timeSeries.hasOwnProperty(date)) {
         stockData[stockSymbol].dates.push(date); // Store the dates
         stockData[stockSymbol].closePrices.push(timeSeries[date]["4. close"]); // Store the 'close' prices
-
-        currentStockPrice = parseFloat(timeSeries[date]["4. close"]); // Parse to float
       }
+    }
+
+    // After the loop, get the last close price
+    if (stockData[stockSymbol].closePrices.length > 0) {
+      currentStockPrice = stockData[stockSymbol].closePrices[0]; // Get the first close price
     }
 
     console.log("currentStockPrice: " + currentStockPrice);

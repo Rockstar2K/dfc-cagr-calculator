@@ -7,13 +7,11 @@ export function updateChart(stockSymbol, stockData, futureStockPrice, yearsSelec
     const dates = stockData[stockSymbol].dates.map(date => new Date(date)); // Convert to Date objects
     const closePrices = stockData[stockSymbol].closePrices;
 
-
-    
     // Calculate future date
     const lastDate = dates[0]; // Get the last date from the existing dates
     console.log('LAST DATE: ' + lastDate);
-    const futureDate = new Date(lastDate.setFullYear(lastDate.getFullYear() + yearsSelected)); // Add selected years to the last date
-
+    const futureDate = new Date(lastDate.getTime()); // Create a copy of the last date
+    futureDate.setFullYear(futureDate.getFullYear() + yearsSelected); // Add selected years
 
     // Add the future date and future stock price to the arrays
     const updatedDates = [...dates, futureDate]; // Append future date
@@ -57,6 +55,7 @@ export function updateChart(stockSymbol, stockData, futureStockPrice, yearsSelec
           ],
         },
         options: {
+        
           scales: {
             x: {
               type: "time",
