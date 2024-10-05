@@ -25,6 +25,14 @@ export function updateChart(stockSymbol, stockData, futureStockPrice, yearsSelec
     const finalDates = sortedData.map(item => item.date);
     const finalClosePrices = sortedData.map(item => item.price);
 
+    // Detect the future date and set the point background color for it
+    const pointBackgroundColors = finalDates.map(date => {
+      return date.getTime() === futureDate.getTime() ? 'green' : 'rgba(75, 192, 192, 0.8)';
+    });
+
+    const pointRadius = finalDates.map(date => {
+      return date.getTime() === futureDate.getTime() ? 5 : 0; // Show the point for the future date
+    });
 
     // Get the context of the canvas element
     const ctx = document.getElementById("myChart").getContext("2d");
@@ -35,7 +43,8 @@ export function updateChart(stockSymbol, stockData, futureStockPrice, yearsSelec
       myChart.data.labels = finalDates; // Use updated dates with future date
       myChart.data.datasets[0].data = finalClosePrices; // Use updated close prices
       myChart.data.datasets[0].label = `${stockSymbol.toUpperCase()} Monthly Close Prices`; // Update label
-
+      myChart.data.datasets[0].pointBackgroundColor = pointBackgroundColors; // Apply point colors
+      myChart.data.datasets[0].pointRadius = pointRadius; // Apply point radius dynamically
       myChart.update();  
     } else {
       // Create a new chart instance if it doesn't exist
@@ -47,10 +56,13 @@ export function updateChart(stockSymbol, stockData, futureStockPrice, yearsSelec
             {
               label: `${stockSymbol.toUpperCase()} Monthly Close Prices`,
               data: finalClosePrices, // Use updated close prices
-              borderColor: "rgba(75, 192, 192, 1)",
+              borderColor: "rgba(45, 140, 255, 1)",
               backgroundColor: "rgba(75, 192, 192, 0.2)",
               fill: false,
               tension: 0.1,
+              pointRadius: pointRadius, // Apply point radius dynamically
+              pointBorderWidth: 0, // No borders on points
+              pointBackgroundColor: pointBackgroundColors, // Color future date point green
             },
           ],
         },
